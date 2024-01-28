@@ -1,4 +1,4 @@
-package main
+package dump
 
 import (
 	"os"
@@ -7,27 +7,28 @@ import (
 	"github.com/ElecTwix/diskdump/pkg/disk"
 )
 
-func main() {
+func DumpFiles() error {
 	currentDir, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	partitions, err := disk.GetAllDisks()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	for _, partition := range partitions {
 		path := path.Join(currentDir, partition.Name)
 		err := os.Mkdir(path, os.ModeDir)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		err = partition.CopyAllToPath(path)
 		if err != nil {
-			panic(err)
+			return err
 		}
-
 	}
+
+	return nil
 }
