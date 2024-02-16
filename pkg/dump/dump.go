@@ -1,6 +1,7 @@
 package dump
 
 import (
+	"log"
 	"os"
 	"path"
 
@@ -19,8 +20,9 @@ func DumpFiles() error {
 	}
 
 	for _, partition := range partitions {
+		log.Printf("Dumping %s\n", partition.Name)
 		path := path.Join(currentDir, partition.Name)
-		err := os.Mkdir(path, os.ModeDir)
+		err := os.Mkdir(path, os.ModePerm)
 		if err != nil {
 			return err
 		}
@@ -29,6 +31,8 @@ func DumpFiles() error {
 			return err
 		}
 	}
+
+	log.Println("Dumping complete!")
 
 	return nil
 }

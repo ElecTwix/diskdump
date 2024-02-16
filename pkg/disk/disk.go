@@ -1,7 +1,9 @@
 package disk
 
 import (
-	"github.com/ElecTwix/diskdump/pkg/copyutil"
+	"strings"
+
+	"github.com/ElecTwix/diskdump/pkg/copy"
 	rawdisk "github.com/shirou/gopsutil/disk"
 )
 
@@ -20,6 +22,8 @@ func GetAllDisks() ([]Disk, error) {
 	disks := make([]Disk, len(partitions))
 
 	for index, partition := range partitions {
+		partition.Device = strings.ReplaceAll(partition.Device, "/", "")
+		partition.Device = strings.ReplaceAll(partition.Device, ":", "_")
 		disks[index] = Disk{
 			Name:       partition.Device,
 			FsType:     partition.Fstype,
@@ -27,9 +31,9 @@ func GetAllDisks() ([]Disk, error) {
 		}
 	}
 
-	return []Disk{}, nil
+	return disks, nil
 }
 
 func (d *Disk) CopyAllToPath(path string) error {
-	return copyutil.CopyDirectoryToPath(d.Mountpoint, path)
+	return copy.CopyDirectoryToPath(d.Mountpoint, path)
 }
